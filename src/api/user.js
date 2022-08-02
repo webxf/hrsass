@@ -7,3 +7,20 @@ export function login(data) {
         data
     })
 }
+
+/**
+ * 获取用户资料
+ * @returns promise
+ */
+export function getUserInfoApi(){
+    return request({
+        url:'/sys/profile',
+        method:'POST'
+    })
+}
+
+export function getUserImg(id){
+    return request({
+        url:`/sys/user/${id}`
+    })
+}

@@ -9,6 +9,11 @@ router.beforeEach((to,from,next) => {
    const token = store.state.user.token
    //加入有token，代表登陆成功
    if(token){
+    //是可以防止每次切换路由前置守卫的时候，都要获取用户信息
+    if(!store.state.user.token.userId){
+    //登录，就可以获取到token,可以拿到用户对应信息
+     store.dispatch('user/getUserInfo')
+    }
     //加入路径是login页面,是否是登录页
     if(to.path==='/login'){
         //如果是登录页，就让它跳转到首页
