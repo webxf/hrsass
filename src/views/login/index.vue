@@ -29,6 +29,7 @@
         <el-input
           placeholder="请输入密码"
           v-model="loginForm.password"
+          type="password"
         ></el-input>
       </el-form-item>
       <el-button
@@ -36,6 +37,7 @@
         style="width: 100%; margin-bottom: 30px"
         class="loginBtn"
         @click="loginBtn"
+        :loading="loading"
         >登录</el-button
       >
 
@@ -80,6 +82,7 @@ export default {
           // },
         ],
       },
+      loading: false,
     }
   },
   components: { SvgIcon },
@@ -88,11 +91,17 @@ export default {
     async loginBtn() {
       //通过try,catch来捕获表单验证是否是异常
       try {
+        this.loading = true
         //拿到loginform上自带的validate，可以实现点击登录按钮，自动校验input框是否异常
         await this.$refs.loginForm.validate()
         //通过传入请求回来的数据，传到user里面
-        this.$store.dispatch('user/getToken', this.loginForm)
-      } catch (err) {}
+        await this.$store.dispatch('user/getToken', this.loginForm)
+        this.$router.push('/')
+        this.$message.success('登录成功')
+      } finally {
+        //点击登录后，最后让loading为false
+        this.loading = false
+      }
     },
   },
 }

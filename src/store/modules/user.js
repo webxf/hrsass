@@ -14,7 +14,7 @@ export default {
       //发送请求得来的数据
    const res = await login(payload)
    console.log(res);
-      context.commit('setToken',res.data.data)
+      context.commit('setToken',res)
     }
   }
 }
