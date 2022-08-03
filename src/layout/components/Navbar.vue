@@ -17,16 +17,17 @@
           <img
             :src="$store.state.user.userInfo.staffPhoto"
             class="user-avatar"
+            v-imgerror="defaultImg"
           />
           <span>{{ $store.state.user.userInfo.username }}</span>
           <i class="el-icon-caret-bottom" />
         </div>
         <el-dropdown-menu slot="dropdown" class="user-dropdown">
           <router-link to="/">
-            <el-dropdown-item> Home </el-dropdown-item>
+            <el-dropdown-item> 首页 </el-dropdown-item>
           </router-link>
           <el-dropdown-item divided @click.native="logout">
-            <span style="display: block">Log Out</span>
+            <span style="display: block">退出</span>
           </el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
@@ -38,8 +39,14 @@
 import { mapGetters } from 'vuex'
 import Breadcrumb from '@/components/Breadcrumb'
 import Hamburger from '@/components/Hamburger'
+import defaultImg from '@/assets/common/head.jpg'
 
 export default {
+  data() {
+    return {
+      defaultImg,
+    }
+  },
   components: {
     Breadcrumb,
     Hamburger,
@@ -53,6 +60,7 @@ export default {
     },
     async logout() {
       await this.$store.dispatch('user/logout')
+      this.$store.dispatch('user/logoout')
       this.$router.push(`/login?redirect=${this.$route.fullPath}`)
     },
   },

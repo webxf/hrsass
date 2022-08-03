@@ -1,4 +1,5 @@
 import {login,getUserInfoApi,getUserImg} from '@/api/user'
+import { setTokenTime } from '@/utils/auth'
 export default {
   namespaced: true,
   state: {
@@ -19,6 +20,8 @@ export default {
    const res = await login(payload)
    console.log(res);
       context.commit('setToken',res)
+      //调用cookie方法
+      setTokenTime()
     },
     //获取用户信息
    async getUserInfo(context){
@@ -29,6 +32,11 @@ export default {
     console.log(data);
     //因为在请求拦截器拿到信息，可以直接commit，然后用拓展运算符，将其合并成一个
     context.commit('setUserInfo',{...res,...data})
+    },
+    logoout(context){
+      context.commit('setToken','')
+      context.commit('setUserInfo',{})
+
     }
   }
 }
