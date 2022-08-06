@@ -115,3 +115,24 @@ export function param2Obj(url) {
   })
   return obj
 }
+export function transListToTree(data, pid) {
+  //定义一个空数组
+  const arr = []
+  //将数组遍历
+  data.forEach((item) => {
+      //因为pid相同，所以可以进行判断，拿出一级数据
+      if (item.pid === pid) {
+          //如果一级的id和二级数据的pid相同，就代表二级数据是他的子数据，然后
+          //在调用函数，传入两个参数
+          const children = transListToTree(data, item.id)
+          //判断子数据长度
+          if (children.length) {
+              //如果有，就让它等于item的children
+              item.children = children
+          }
+          //拿到一级数据，push到arr上面
+          arr.push(item)
+      }
+  })
+  return arr
+}
