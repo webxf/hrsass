@@ -3,7 +3,7 @@ import store from '@/store'
 //配置未登录白名单
 const whiteList = ['/login','/404']
 //配置全局前置路由守卫，可以解决不用登陆输入网址直接跳过登录
-router.beforeEach((to,from,next) => {
+router.beforeEach(async (to,from,next) => {
     //如果登录成功
     //拿到登陆后的token
    const token = store.state.user.token
@@ -12,7 +12,7 @@ router.beforeEach((to,from,next) => {
     //是可以防止每次切换路由前置守卫的时候，都要获取用户信息
     if(!store.state.user.token.userId){
     //登录，就可以获取到token,可以拿到用户对应信息
-     store.dispatch('user/getUserInfo')
+    await store.dispatch('user/getUserInfo')
     }
     //加入路径是login页面,是否是登录页
     if(to.path==='/login'){
