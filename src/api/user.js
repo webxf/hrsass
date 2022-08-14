@@ -24,3 +24,11 @@ export function getUserImg(id){
         url:`/sys/user/${id}`
     })
 }
+
+export function updateInfo(data) {
+    return request({
+      url: `/sys/user/${data.id}`,
+      method: 'put',
+      data
+    })
+  }
