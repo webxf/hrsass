@@ -15,6 +15,10 @@ import router from './router'
 import '@/icons' // icon
 import '@/permission' // permission control
 import *as directives from '@/directives'
+import components from '@/components'
+import dayjs from 'dayjs'
+import * as filters from '@/filters'
+Vue.use(components)
 /**
  * If you don't want to use mock-server
  * you want to use MockJs for mock api
@@ -26,6 +30,9 @@ import *as directives from '@/directives'
 if (process.env.NODE_ENV === 'production') {
   const { mockXHR } = require('../mock')
   mockXHR()
+}
+for(let key in filters){
+  Vue.filter(key,filters[key])
 }
 
 // set ElementUI lang to EN
