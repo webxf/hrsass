@@ -1,5 +1,9 @@
 <template>
   <div class="user-info">
+    <i
+      class="el-icon-printer"
+      @click="$router.push(`/employees/print/${userId}?type=personal`)"
+    ></i>
     <!-- 个人信息 -->
     <el-form label-width="220px">
       <!-- 工号 入职时间 -->
@@ -58,6 +62,10 @@
         <el-col :span="12">
           <el-form-item label="员工头像">
             <!-- 放置上传图片 -->
+            <upload-img
+              ref="headerImg"
+              @onSuccess="headImgsuccess"
+            ></upload-img>
           </el-form-item>
         </el-col>
       </el-row>
@@ -91,6 +99,8 @@
 
         <el-form-item label="员工照片">
           <!-- 放置上传图片 -->
+          <upload-img ref="employeesImg" @onSuccess="employessImg">
+          </upload-img>
         </el-form-item>
         <el-form-item label="国家/地区">
           <el-select v-model="formData.nationalArea" class="inputW2">
@@ -467,17 +477,36 @@ export default {
   methods: {
     async getInfo() {
       this.userInfo = await getUserImg(this.userId)
+      this.$refs.headerImg.fileList.push({
+        url: this.userInfo.staffPhoto,
+      })
     },
     async getfooterInfo() {
       this.formData = await getEmployee(this.userId)
+      this.$refs.employeesImg.fileList.push({
+        url: this.formData.staffPhoto,
+      })
     },
+    // employeesImg
     async saveTop() {
+      if (this.$refs.headerImg.loading) {
+        return this.$message('头像正在上传中')
+      }
       await updateInfo(this.userInfo)
       this.$message.success('更新成功')
     },
     async saveFooter() {
+      if (this.$refs.employeesImg.loading) {
+        return this.$message('头像正在上传中')
+      }
       await updatePersonal(this.formData)
       this.$message.success('更新成功')
+    },
+    headImgsuccess({ url }) {
+      this.userInfo.staffPhoto = url
+    },
+    employessImg({ url }) {
+      this.formData.staffPhoto = url
     },
   },
 }

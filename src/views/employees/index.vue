@@ -35,6 +35,7 @@
                   height: 100px;
                   padding: 10px;
                 "
+                @click="erma(row.staffPhoto)"
               />
             </template>
           </el-table-column>
@@ -98,6 +99,9 @@
       </el-card>
     </div>
     <addEmployees :visible.sync="isShow"></addEmployees>
+    <el-dialog :visible.sync="erShow" title="二维码">
+      <canvas id="canvas"></canvas>
+    </el-dialog>
   </div>
 </template>
 
@@ -106,6 +110,7 @@ import { getUserInfoApi, delEmployee } from '@/api/empioyee'
 import employees from '@/constant/employees'
 import addEmployees from './components/addEmployees.vue'
 const { exportExcelMapPath, hireType } = employees
+import QRcode from 'qrcode'
 export default {
   components: {
     addEmployees,
@@ -119,12 +124,21 @@ export default {
         size: 5,
       },
       isShow: false,
+      erShow: false,
     }
   },
   created() {
     this.getUserInfo()
   },
   methods: {
+    erma(staffPhoto) {
+      if (!staffPhoto) return this.$message.error('用户未登录')
+      this.erShow = true
+      this.$nextTick(() => {
+        const canvas = document.querySelector('#canvas')
+        QRcode.toCanvas(canvas, staffPhoto)
+      })
+    },
     async getUserInfo() {
       const { rows, total } = await getUserInfoApi(this.pages)
       this.employ = rows

@@ -17,8 +17,10 @@ import '@/permission' // permission control
 import *as directives from '@/directives'
 import components from '@/components'
 import dayjs from 'dayjs'
+import Print from 'vue-print-nb'
 import * as filters from '@/filters'
 Vue.use(components)
+Vue.use(Print)
 /**
  * If you don't want to use mock-server
  * you want to use MockJs for mock api

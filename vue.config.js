@@ -40,7 +40,7 @@ module.exports = {
    proxy:{
     //拦截api
     '/api':{
-      target:'http://ihrm.itheima.net/'  //跨域请求的地址
+      target:'http://ihrm-java.itheima.net/'  //跨域请求的地址
     }
    }
   },
