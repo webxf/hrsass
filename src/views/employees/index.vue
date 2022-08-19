@@ -73,7 +73,9 @@
               <el-button type="text" size="small">转正</el-button>
               <el-button type="text" size="small">调岗</el-button>
               <el-button type="text" size="small">离职</el-button>
-              <el-button type="text" size="small">角色</el-button>
+              <el-button type="text" size="small" @click="assinRole(row)"
+                >角色</el-button
+              >
               <el-button type="text" size="small" @click="delFn(row.id)"
                 >删除</el-button
               >
@@ -102,6 +104,8 @@
     <el-dialog :visible.sync="erShow" title="二维码">
       <canvas id="canvas"></canvas>
     </el-dialog>
+    <!-- 分配角色 -->
+    <assinRole :visible.sync="visible" :roleId="currentId"></assinRole>
   </div>
 </template>
 
@@ -111,12 +115,15 @@ import employees from '@/constant/employees'
 import addEmployees from './components/addEmployees.vue'
 const { exportExcelMapPath, hireType } = employees
 import QRcode from 'qrcode'
+import assinRole from './components/assin-role.vue'
 export default {
   components: {
     addEmployees,
+    assinRole,
   },
   data() {
     return {
+      visible: false,
       employ: [],
       total: 0,
       pages: {
@@ -125,6 +132,7 @@ export default {
       },
       isShow: false,
       erShow: false,
+      currentId: '',
     }
   },
   created() {
@@ -189,6 +197,11 @@ export default {
         autoWidth: true, //非必填
         bookType: 'xlsx', //非必填
       })
+    },
+    assinRole(row) {
+      this.currentId = row.id
+
+      this.visible = true
     },
   },
 }

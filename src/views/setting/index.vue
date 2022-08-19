@@ -10,7 +10,9 @@
             <el-table-column prop="name" label="描述"> </el-table-column>
             <el-table-column label="操作">
               <template>
-                <el-button type="success" size="small">分配权限</el-button>
+                <el-button type="success" size="small" @click="showSeting"
+                  >分配权限</el-button
+                >
                 <el-button type="primary" size="small">编辑</el-button>
                 <el-button type="danger" size="small">删除</el-button>
               </template>
@@ -73,6 +75,20 @@
           </el-form>
         </el-tab-pane>
       </el-tabs>
+      <el-dialog title="分配权限" :visible.sync="setlogVisible" width="30%">
+        <el-tree
+          :data="permissions"
+          :props="{ label: 'name' }"
+          node-key="id"
+          default-expand-all
+          :default-expanded-keys="defaultKeys"
+          show-checkbox
+        ></el-tree>
+        <span slot="footer" class="dialog-footer">
+          <el-button @click="setlogVisible = false">取 消</el-button>
+          <el-button type="primary">确 定</el-button>
+        </span>
+      </el-dialog>
     </div>
   </div>
 </template>
@@ -80,7 +96,10 @@
 <script>
 import { getRoles, addRolesApi } from '@/api/role'
 import { getcomponey } from '@/api/setting'
+import { getPermissionList } from '@/api/permission'
+import { transListToTree } from '@/utils/index'
 export default {
+  name: 'permission',
   data() {
     return {
       activeName: 'first',
@@ -97,12 +116,16 @@ export default {
         name: [{ required: true, message: '请填写名称', trigger: 'blur' }],
       },
       companyInfo: {},
+      setlogVisible: false,
+      permissions: [],
+      defaultKeys: ['1', '2'],
     }
   },
 
   created() {
     this.getRoles()
     this.getComponeyInfo()
+    this.getPermissions()
   },
 
   methods: {
@@ -140,6 +163,14 @@ export default {
       const res = await getcomponey(this.$store.state.user.userInfo.companyId)
       console.log(res)
       this.companyInfo = res
+    },
+    showSeting() {
+      this.setlogVisible = true
+    },
+    async getPermissions() {
+      const res = await getPermissionList()
+      const treePermission = transListToTree(res, '0')
+      this.permissions = treePermission
     },
   },
 }
