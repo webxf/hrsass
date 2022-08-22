@@ -1,4 +1,4 @@
-
+import store from '@/store'
 //自定义指令的规范写法
 export const imgerror = {
     // console.log(binding);
@@ -14,6 +14,15 @@ export const imgerror = {
     update(ele,{value}){
       if(!ele.src){
         ele.src = value
+      }
+    }
+  }
+
+  export const isHas = {
+    inserted(el,binding){
+      const has = store.state.permission.points.includes(binding.value)
+      if(!has){
+        el.remove()
       }
     }
   }

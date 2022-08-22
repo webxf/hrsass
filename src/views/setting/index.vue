@@ -3,17 +3,30 @@
     <div class="app-container">
       <el-tabs v-model="activeName">
         <el-tab-pane label="角色管理" name="first">
-          <el-button type="primary" @click="addFn">新增角色</el-button>
+          <el-button
+            type="primary"
+            @click="addFn"
+            v-if="isHasPermission(point.roles.add)"
+            >新增角色</el-button
+          >
           <el-table :data="tableData" style="width: 100%">
             <el-table-column label="序号" type="index"> </el-table-column>
             <el-table-column prop="name" label="角色"> </el-table-column>
             <el-table-column prop="name" label="描述"> </el-table-column>
             <el-table-column label="操作">
-              <template>
-                <el-button type="success" size="small" @click="showSeting"
+              <template slot-scope="{ row }">
+                <el-button
+                  type="success"
+                  size="small"
+                  @click="showSeting(row.id)"
                   >分配权限</el-button
                 >
-                <el-button type="primary" size="small">编辑</el-button>
+                <el-button
+                  type="primary"
+                  size="small"
+                  v-if="isHasPermission(point.roles.edit)"
+                  >编辑</el-button
+                >
                 <el-button type="danger" size="small">删除</el-button>
               </template>
             </el-table-column>
@@ -75,18 +88,25 @@
           </el-form>
         </el-tab-pane>
       </el-tabs>
-      <el-dialog title="分配权限" :visible.sync="setlogVisible" width="30%">
+      <el-dialog
+        title="分配权限"
+        :visible.sync="setlogVisible"
+        width="30%"
+        destroy-on-close
+        @close="emptyPermission"
+      >
         <el-tree
           :data="permissions"
           :props="{ label: 'name' }"
           node-key="id"
           default-expand-all
-          :default-expanded-keys="defaultKeys"
+          :default-checked-keys="defaultKeys"
           show-checkbox
+          ref="perTree"
         ></el-tree>
         <span slot="footer" class="dialog-footer">
           <el-button @click="setlogVisible = false">取 消</el-button>
-          <el-button type="primary">确 定</el-button>
+          <el-button type="primary" @click="saveBtn">确 定</el-button>
         </span>
       </el-dialog>
     </div>
@@ -94,10 +114,12 @@
 </template>
 
 <script>
-import { getRoles, addRolesApi } from '@/api/role'
+import { getRoles, addRolesApi, getRoleInfo, assignPerm } from '@/api/role'
 import { getcomponey } from '@/api/setting'
 import { getPermissionList } from '@/api/permission'
 import { transListToTree } from '@/utils/index'
+import mixinspermissions from '@/mixins/permission'
+
 export default {
   name: 'permission',
   data() {
@@ -118,10 +140,11 @@ export default {
       companyInfo: {},
       setlogVisible: false,
       permissions: [],
-      defaultKeys: ['1', '2'],
+      defaultKeys: [],
+      roleId: '',
     }
   },
-
+  mixinspermissions: ['point'],
   created() {
     this.getRoles()
     this.getComponeyInfo()
@@ -164,13 +187,27 @@ export default {
       console.log(res)
       this.companyInfo = res
     },
-    showSeting() {
+    async showSeting(id) {
+      this.roleId = id
+      const res = await getRoleInfo(id)
+      this.defaultKeys = res.permIds
       this.setlogVisible = true
     },
     async getPermissions() {
       const res = await getPermissionList()
       const treePermission = transListToTree(res, '0')
       this.permissions = treePermission
+    },
+    emptyPermission() {
+      this.defaultKeys = []
+    },
+    async saveBtn() {
+      await assignPerm({
+        id: this.roleId,
+        permIds: this.$refs.perTree.getCheckedKeys(),
+      })
+      this.$message.success('添加成功')
+      this.setlogVisible = false
     },
   },
 }

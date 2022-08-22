@@ -8,12 +8,21 @@
             size="small"
             type="warning"
             @click="$router.push('/import')"
+            v-isHas="point.employees.import"
             >导入</el-button
           >
-          <el-button size="small" type="danger" @click="importemploy"
+          <el-button
+            size="small"
+            type="danger"
+            @click="importemploy"
+            v-isHas="point.employees.export"
             >导出</el-button
           >
-          <el-button size="small" type="primary" @click="addFn"
+          <el-button
+            size="small"
+            type="primary"
+            @click="addFn"
+            v-isHas="point.employees.add"
             >新增员工</el-button
           >
         </template>
@@ -76,7 +85,11 @@
               <el-button type="text" size="small" @click="assinRole(row)"
                 >角色</el-button
               >
-              <el-button type="text" size="small" @click="delFn(row.id)"
+              <el-button
+                type="text"
+                size="small"
+                @click="delFn(row.id)"
+                v-isHas="point.employees.del"
                 >删除</el-button
               >
             </template>
@@ -115,6 +128,8 @@ import employees from '@/constant/employees'
 import addEmployees from './components/addEmployees.vue'
 const { exportExcelMapPath, hireType } = employees
 import QRcode from 'qrcode'
+import mixinspermissions from '@/mixins/permission'
+
 import assinRole from './components/assin-role.vue'
 export default {
   components: {
@@ -133,8 +148,10 @@ export default {
       isShow: false,
       erShow: false,
       currentId: '',
+      // point: permissionPoint,
     }
   },
+  mixinspermissions: [employees],
   created() {
     this.getUserInfo()
   },

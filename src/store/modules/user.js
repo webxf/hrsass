@@ -1,10 +1,11 @@
 import {login,getUserInfoApi,getUserImg} from '@/api/user'
 import { setTokenTime } from '@/utils/auth'
+import {resetRouter} from '@/router/index'
 export default {
   namespaced: true,
   state: {
     token:'',
-    userInfo:''
+    userInfo:{}
   },
   mutations: {
     setToken(state,payload){
@@ -32,11 +33,13 @@ export default {
     console.log(data);
     //因为在请求拦截器拿到信息，可以直接commit，然后用拓展运算符，将其合并成一个
     context.commit('setUserInfo',{...res,...data})
+    return res
     },
     logoout(context){
       context.commit('setToken','')
       context.commit('setUserInfo',{})
-
+      resetRouter()
+      context.commit('permission/setRoutes',[],{root:true})
     }
   }
 }

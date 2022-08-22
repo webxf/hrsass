@@ -7,3 +7,13 @@ export function getPermissionList(params) {
       params
     })
   }
+
+
+  //添加权限
+  export function addPermission(data){
+    return request({
+      url:'/sys/permission',
+      method:'POST',
+      data
+    })
+  }

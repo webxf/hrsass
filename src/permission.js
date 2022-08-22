@@ -1,4 +1,4 @@
-import router from '@/router'
+import router,{asyncRoutes} from '@/router'
 import store from '@/store'
 //配置未登录白名单
 const whiteList = ['/login','/404']
@@ -10,9 +10,15 @@ router.beforeEach(async (to,from,next) => {
    //加入有token，代表登陆成功
    if(token){
     //是可以防止每次切换路由前置守卫的时候，都要获取用户信息
-    if(!store.state.user.token.userId){
+    if(!store.state.user.userInfo.userId){
+    console.log(store.state.user.userInfo);
+
     //登录，就可以获取到token,可以拿到用户对应信息
-    await store.dispatch('user/getUserInfo')
+   const {roles} = await store.dispatch('user/getUserInfo')
+   console.log(roles.menus);
+   await store.dispatch('permission/filterRoutes',roles)
+//    console.log(asyncRoutes);
+    // next(to.path)
     }
     //加入路径是login页面,是否是登录页
     if(to.path==='/login'){
