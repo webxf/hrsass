@@ -1,7 +1,9 @@
 import request from '@/utils/request'
-
-export function getcomponey(componeyId){
-    return request({
-        url:'/company/'+componeyId,
-    })
+/**
+ * 获取公司信息
+ * **/
+export function getCompanyInfoApi(companyId) {
+  return request({
+    url: `/company/${companyId}`,
+  })
 }

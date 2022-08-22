@@ -1,8 +1,8 @@
 <template>
   <div class="user-info">
     <i
-      class="el-icon-printer"
       @click="$router.push(`/employees/print/${userId}?type=personal`)"
+      class="el-icon-printer"
     ></i>
     <!-- 个人信息 -->
     <el-form label-width="220px">
@@ -62,17 +62,16 @@
         <el-col :span="12">
           <el-form-item label="员工头像">
             <!-- 放置上传图片 -->
-            <upload-img
-              ref="headerImg"
-              @onSuccess="headImgsuccess"
-            ></upload-img>
+            <upload-img ref="headerImg" @onSuccess="headerImgSuccess" />
           </el-form-item>
         </el-col>
       </el-row>
       <!-- 保存个人信息 -->
       <el-row class="inline-info" type="flex" justify="center">
         <el-col :span="12">
-          <el-button type="primary" @click="saveTop">保存更新</el-button>
+          <el-button type="primary" @click="onSaveUserDetail"
+            >保存更新</el-button
+          >
           <el-button @click="$router.back()">返回</el-button>
         </el-col>
       </el-row>
@@ -99,8 +98,7 @@
 
         <el-form-item label="员工照片">
           <!-- 放置上传图片 -->
-          <upload-img ref="employeesImg" @onSuccess="employessImg">
-          </upload-img>
+          <upload-img ref="employeesPic" @onSuccess="employeesPicSuccess" />
         </el-form-item>
         <el-form-item label="国家/地区">
           <el-select v-model="formData.nationalArea" class="inputW2">
@@ -386,7 +384,9 @@
         <!-- 保存员工信息 -->
         <el-row class="inline-info" type="flex" justify="center">
           <el-col :span="12">
-            <el-button type="primary" @click="saveFooter">保存更新</el-button>
+            <el-button type="primary" @click="onSaveEmployeesInfo"
+              >保存更新</el-button
+            >
             <el-button @click="$router.back()">返回</el-button>
           </el-col>
         </el-row>
@@ -397,8 +397,9 @@
 
 <script>
 import EmployeeEnum from '@/constant/employees'
-import { getUserImg, updateInfo } from '@/api/user'
-import { updatePersonal, getEmployee } from '@/api/empioyee'
+import { getUserDetail, saveUserDetailById } from '@/api/user.js'
+import { getPersonalDetail, updatePersonal } from '@/api/employees.js'
+
 export default {
   data() {
     return {
@@ -471,41 +472,43 @@ export default {
     }
   },
   created() {
-    this.getInfo()
-    this.getfooterInfo()
+    this.loadUserDetail()
+    this.loadEmployeesInfo()
   },
   methods: {
-    async getInfo() {
-      this.userInfo = await getUserImg(this.userId)
+    async loadUserDetail() {
+      this.userInfo = await getUserDetail(this.userId)
       this.$refs.headerImg.fileList.push({
         url: this.userInfo.staffPhoto,
       })
     },
-    async getfooterInfo() {
-      this.formData = await getEmployee(this.userId)
-      this.$refs.employeesImg.fileList.push({
+    async loadEmployeesInfo() {
+      this.formData = await getPersonalDetail(this.userId)
+      this.$refs.employeesPic.fileList.push({
         url: this.formData.staffPhoto,
       })
     },
-    // employeesImg
-    async saveTop() {
+    async onSaveUserDetail() {
       if (this.$refs.headerImg.loading) {
-        return this.$message('头像正在上传中')
+        return this.$message.error('头像正在上传中')
       }
-      await updateInfo(this.userInfo)
+      await saveUserDetailById(this.userInfo)
+
       this.$message.success('更新成功')
     },
-    async saveFooter() {
-      if (this.$refs.employeesImg.loading) {
-        return this.$message('头像正在上传中')
+    async onSaveEmployeesInfo() {
+      if (this.$refs.employeesPic.loading) {
+        return this.$message.error('头像正在上传中')
       }
       await updatePersonal(this.formData)
       this.$message.success('更新成功')
     },
-    headImgsuccess({ url }) {
+    // 监听员工头像上传成功
+    headerImgSuccess({ url }) {
       this.userInfo.staffPhoto = url
     },
-    employessImg({ url }) {
+    // 监听员工照片上传成功
+    employeesPicSuccess({ url }) {
       this.formData.staffPhoto = url
     },
   },

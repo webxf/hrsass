@@ -14,21 +14,20 @@ const store = new Vuex.Store({
     app,
     settings,
     user,
-    permission
+    permission,
   },
   getters,
-  plugins:[
+  plugins: [
     createVuexPersisted({
-      reducer(state){
+      reducer(state) {
         return {
-          user:{
-            token:state.user.token
-          }
+          user: {
+            token: state.user.token,
+          },
         }
-      }
-    })
-  ]
-  
+      },
+    }),
+  ],
 })
 
 export default store

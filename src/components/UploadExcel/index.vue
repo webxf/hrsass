@@ -33,7 +33,7 @@
 <script>
 import XLSX from 'xlsx'
 export default {
-  name: 'uploadExcel',
+  name: 'UploadExcel',
   props: {
     beforeUpload: Function, // eslint-disable-line
     onSuccess: Function, // eslint-disable-line
@@ -65,7 +65,7 @@ export default {
       const rawFile = files[0] // only use files[0]
       if (!this.isExcel(rawFile)) {
         this.$message.error(
-          'Only supports upload .xlsx, .xls, .csv suffix files',
+          'Only supports upload .xlsx, .xls, .csv suffix files'
         )
         return false
       }

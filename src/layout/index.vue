@@ -7,14 +7,14 @@
     />
     <!-- 侧边栏 -->
     <sidebar class="sidebar-container" />
-    <!-- 主体区域，内容 -->
+    <!-- 主体内容 -->
     <div class="main-container">
-      <!-- 主体头部 -->
+      <!-- 头部 -->
       <div :class="{ 'fixed-header': fixedHeader }">
         <!-- 头部navbar组件 -->
         <navbar />
       </div>
-      <!-- 子路由占位 -->
+      <!-- 肯定是子路由占位 -->
       <app-main />
     </div>
   </div>

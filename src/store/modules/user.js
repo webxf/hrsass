@@ -1,45 +1,44 @@
-import {login,getUserInfoApi,getUserImg} from '@/api/user'
+import { getUserDetail, getUserInfoApi, login } from '@/api/user.js'
 import { setTokenTime } from '@/utils/auth'
-import {resetRouter} from '@/router/index'
+import { resetRouter } from '@/router'
 export default {
   namespaced: true,
   state: {
-    token:'',
-    userInfo:{}
+    token: '',
+    userInfo: {},
   },
   mutations: {
-    setToken(state,payload){
+    setToken(state, payload) {
       state.token = payload
     },
-    setUserInfo(state,payload){
+    setUserInfo(state, payload) {
       state.userInfo = payload
-    }
+    },
   },
   actions: {
-   async getToken(context,payload){
-      //发送请求得来的数据
-   const res = await login(payload)
-   console.log(res);
-      context.commit('setToken',res)
-      //调用cookie方法
+    // 登录获取token
+    async getToken(context, payload) {
+      // 发送请求得来的
+      const res = await login(payload)
+      context.commit('setToken', res)
       setTokenTime()
     },
-    //获取用户信息
-   async getUserInfo(context){
-    const res = await getUserInfoApi()
-    console.log(res);
-    //获取用户头像信息
-    const data = await getUserImg(res.userId)
-    console.log(data);
-    //因为在请求拦截器拿到信息，可以直接commit，然后用拓展运算符，将其合并成一个
-    context.commit('setUserInfo',{...res,...data})
-    return res
+    // 获取用户信息
+    async getUserInfo(context) {
+      const userBaseInfo = await getUserInfoApi()
+      const userInfo = await getUserDetail(userBaseInfo.userId)
+      context.commit('setUserInfo', { ...userBaseInfo, ...userInfo })
+      // 在这里通过userBaseInfo 处理动态路由
+      // actions 内部可以通过return将数据传递出去, 类似then中的return
+      return userBaseInfo
     },
-    logoout(context){
-      context.commit('setToken','')
-      context.commit('setUserInfo',{})
+    // 退出
+    logout(context) {
+      context.commit('setToken', '')
+      context.commit('setUserInfo', {})
       resetRouter()
-      context.commit('permission/setRoutes',[],{root:true})
-    }
-  }
+      // {root: true} context 相当于全局的context
+      context.commit('permission/setRoutes', [], { root: true })
+    },
+  },
 }
