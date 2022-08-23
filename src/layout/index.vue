@@ -13,6 +13,7 @@
       <div :class="{ 'fixed-header': fixedHeader }">
         <!-- 头部navbar组件 -->
         <navbar />
+        <TagsView />
       </div>
       <!-- 肯定是子路由占位 -->
       <app-main />
@@ -21,12 +22,13 @@
 </template>
 
 <script>
-import { Navbar, Sidebar, AppMain } from './components'
+import { Navbar, Sidebar, AppMain, TagsView } from './components'
 import ResizeMixin from './mixin/ResizeHandler'
 
 export default {
   name: 'Layout',
   components: {
+    TagsView,
     Navbar,
     Sidebar,
     AppMain,

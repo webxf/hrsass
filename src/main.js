@@ -22,6 +22,7 @@ import components from '@/components'
 // 过滤器封装
 import * as filters from '@/filters'
 import Print from 'vue-print-nb'
+import i18n from '@/i18n'
 // console.log(Print)
 Vue.use(Print)
 
@@ -43,7 +44,9 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 // 注册element ui
-Vue.use(ElementUI, { locale })
+Vue.use(ElementUI, {
+  i18n: (key, value) => i18n.t(key, value)
+})
 // 如果想要中文版 element-ui，按如下方式声明
 // Vue.use(ElementUI)
 
@@ -56,6 +59,7 @@ Vue.config.productionTip = false
 
 new Vue({
   el: '#app',
+  i18n,
   router,
   store,
   render: (h) => h(App),

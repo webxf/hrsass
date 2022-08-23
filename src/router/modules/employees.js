@@ -2,6 +2,7 @@ import Layout from '@/layout'
 export default {
   path: '/employees',
   component: Layout,
+  name: 'employees',
   meta: {
     id: 'employees', // 用来和后端权限做约定的
   },
@@ -9,6 +10,7 @@ export default {
     {
       path: '',
       component: () => import('@/views/employees'),
+      name: 'employees',
       meta: { title: '员工', icon: 'people' },
     },
     {
