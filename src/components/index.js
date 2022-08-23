@@ -1,6 +1,6 @@
 import PageTools from './PageTools'
 import xlsx from './xlsx'
-import uploadImg from './uploadImg'
+// import uploadImg from './uploadImg'
 const components = [PageTools,xlsx,uploadImg]
 export default{
     install(Vue){
